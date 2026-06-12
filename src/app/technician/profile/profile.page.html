@@ -1,0 +1,135 @@
+<ion-content class="settings-content">
+
+  <div class="avatar-section">
+    <div class="avatar-circle">
+      <img *ngIf="profilePhoto" [src]="profilePhoto" class="avatar-img" alt="avatar"
+           (error)="onAvatarError()"/>
+      <ion-icon *ngIf="!profilePhoto" name="person-circle-outline" class="avatar-default"></ion-icon>
+    </div>
+    <p class="avatar-name">{{ user?.name || 'Technician' }}</p>
+    <p class="avatar-email">{{ user?.email || '' }}</p>
+  </div>
+
+  <div class="settings-body">
+    <p class="settings-label">Settings</p>
+    <div class="menu-card">
+      <div class="menu-item" (click)="openProfileModal()">
+        <div class="menu-icon"><ion-icon name="person-outline"></ion-icon></div>
+        <span class="menu-text">Profile</span>
+        <ion-icon name="chevron-forward-outline" class="menu-arrow"></ion-icon>
+      </div>
+      <div class="menu-divider"></div>
+      <div class="menu-item" (click)="confirmLogout()">
+        <div class="menu-icon logout-icon"><ion-icon name="log-out-outline"></ion-icon></div>
+        <span class="menu-text menu-text-logout">Logout</span>
+        <ion-icon name="chevron-forward-outline" class="menu-arrow"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-modal" [class.slide-in]="showProfileModal" *ngIf="showProfileModal">
+
+    <button class="modal-x-close" (click)="closeProfileModal()">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+
+    <div class="modal-scroll-content">
+
+      <div class="success-overlay" *ngIf="showSuccess">
+        <div class="success-box">
+          <ion-icon name="checkmark-circle-outline" class="success-icon"></ion-icon>
+          <h3 class="success-title">Success</h3>
+          <p class="success-desc">Profile updated successfully.</p>
+          <ion-button expand="block" class="btn-ok" (click)="closeProfileModal()">OK</ion-button>
+        </div>
+      </div>
+
+      <div class="modal-avatar-section">
+        <div class="modal-avatar" (click)="pickPhoto()">
+          <img *ngIf="profilePhoto" [src]="profilePhoto" class="avatar-img" alt="avatar"
+               (error)="onAvatarError()"/>
+          <ion-icon *ngIf="!profilePhoto" name="camera-outline"></ion-icon>
+        </div>
+        <p class="avatar-hint">Tap to change photo</p>
+      </div>
+
+      <div class="modal-form">
+        <div class="form-group">
+          <p class="form-label">Name</p>
+          <input type="text" [(ngModel)]="formName" class="form-input" placeholder="Enter full name"/>
+        </div>
+        <div class="form-group">
+          <p class="form-label">Email</p>
+          <input type="email" [(ngModel)]="formEmail" class="form-input form-input-disabled" disabled/>
+        </div>
+        <div class="form-group">
+          <p class="form-label">Phone Number</p>
+          <input type="tel" [(ngModel)]="formPhone" class="form-input" placeholder="Enter phone number"/>
+        </div>
+
+        <div class="change-pw-toggle" (click)="toggleChangePassword()">
+          <ion-icon [name]="showChangePassword ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+          <span>{{ showChangePassword ? 'Batal Ganti Password' : 'Ganti Password' }}</span>
+        </div>
+
+        <div class="change-pw-section" *ngIf="showChangePassword">
+          <div class="form-group">
+            <p class="form-label">Password Saat Ini</p>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input
+                [type]="showCurrentPw ? 'text' : 'password'"
+                [(ngModel)]="formCurrentPassword"
+                class="form-input"
+                placeholder="Masukkan password saat ini"
+                style="padding-right: 44px; width: 100%;"/>
+              <ion-icon
+                [name]="showCurrentPw ? 'eye-outline' : 'eye-off-outline'"
+                (click)="showCurrentPw = !showCurrentPw"
+                style="position: absolute; right: 14px; font-size: 20px; color: var(--ion-color-medium); cursor: pointer;">
+              </ion-icon>
+            </div>
+          </div>
+          <div class="form-group">
+            <p class="form-label">Password Baru</p>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input
+                [type]="showNewPw ? 'text' : 'password'"
+                [(ngModel)]="formNewPassword"
+                class="form-input"
+                placeholder="Minimal 6 karakter"
+                style="padding-right: 44px; width: 100%;"/>
+              <ion-icon
+                [name]="showNewPw ? 'eye-outline' : 'eye-off-outline'"
+                (click)="showNewPw = !showNewPw"
+                style="position: absolute; right: 14px; font-size: 20px; color: var(--ion-color-medium); cursor: pointer;">
+              </ion-icon>
+            </div>
+          </div>
+          <div class="form-group">
+            <p class="form-label">Konfirmasi Password Baru</p>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input
+                [type]="showConfirmPw ? 'text' : 'password'"
+                [(ngModel)]="formNewPasswordConfirmation"
+                class="form-input"
+                placeholder="Ulangi password baru"
+                style="padding-right: 44px; width: 100%;"/>
+              <ion-icon
+                [name]="showConfirmPw ? 'eye-outline' : 'eye-off-outline'"
+                (click)="showConfirmPw = !showConfirmPw"
+                style="position: absolute; right: 14px; font-size: 20px; color: var(--ion-color-medium); cursor: pointer;">
+              </ion-icon>
+            </div>
+          </div>
+        </div>
+
+        <ion-button expand="block" class="btn-save" [disabled]="isSaving" (click)="saveProfile()">
+          <ion-spinner name="crescent" *ngIf="isSaving" slot="start"></ion-spinner>
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>

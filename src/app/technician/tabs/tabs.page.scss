@@ -1,0 +1,15 @@
+.mavii-tab-bar {
+  --background: #ffffff;
+  --border: none;
+  height: calc(65px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom);
+
+  ion-tab-button {
+    --color: #92949C;
+    --color-selected: var(--mavii-orange);
+    --ripple-color: transparent;
+    ion-icon { font-size: 22px; margin-bottom: 2px; }
+  }
+}

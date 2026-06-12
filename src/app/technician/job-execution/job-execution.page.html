@@ -1,0 +1,93 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="execution-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button icon="arrow-back-outline" defaultHref="/technician/tabs/tasks" (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Proof of Work</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="execution-content">
+
+  <div *ngIf="isLoading" style="padding:16px;">
+    <ion-skeleton-text animated style="height:200px;border-radius:16px;margin-bottom:12px;"></ion-skeleton-text>
+    <ion-skeleton-text animated style="height:200px;border-radius:16px;"></ion-skeleton-text>
+  </div>
+
+  <div *ngIf="!isLoading">
+
+    <div class="proof-section" [class.section-uploaded]="photoBeforeUploaded">
+      <div class="proof-label-row">
+        <p class="proof-label">Sebelum :</p>
+        <span class="uploaded-badge" *ngIf="photoBeforeUploaded">
+          <ion-icon name="checkmark-circle-outline"></ion-icon> Uploaded
+        </span>
+      </div>
+      <div class="photo-box" (click)="!photoBeforeUploaded && pickPhotoBefore()">
+        <img *ngIf="photoBefore" [src]="photoBefore" class="photo-preview"/>
+        <div *ngIf="!photoBefore && !photoBeforeUploaded" class="photo-placeholder">
+          <ion-icon name="camera-outline"></ion-icon>
+          <span>Ketuk untuk ambil foto</span>
+        </div>
+        <div *ngIf="!photoBefore && photoBeforeUploaded" class="photo-already-uploaded">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Foto sudah diupload</span>
+        </div>
+        <div *ngIf="photoBefore && photoBeforeUploaded" class="uploaded-overlay">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+      </div>
+      <ion-button expand="block"
+        [class]="photoBeforeUploaded ? 'btn-upload btn-uploaded' : 'btn-upload'"
+        [disabled]="!photoBefore || isUploadingBefore || photoBeforeUploaded"
+        (click)="uploadPhotoBefore()">
+        <ion-spinner name="crescent" *ngIf="isUploadingBefore" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isUploadingBefore && !photoBeforeUploaded" name="cloud-upload-outline" slot="start"></ion-icon>
+        <ion-icon *ngIf="photoBeforeUploaded" name="checkmark-circle-outline" slot="start"></ion-icon>
+        {{ isUploadingBefore ? 'Mengunggah...' : (photoBeforeUploaded ? 'Sudah Diupload' : 'Upload Foto Sebelum') }}
+      </ion-button>
+    </div>
+
+    <div class="proof-section" [class.section-uploaded]="photoAfterUploaded">
+      <div class="proof-label-row">
+        <p class="proof-label">Sesudah :</p>
+        <span class="uploaded-badge" *ngIf="photoAfterUploaded">
+          <ion-icon name="checkmark-circle-outline"></ion-icon> Uploaded
+        </span>
+      </div>
+      <div class="photo-box" (click)="!photoAfterUploaded && pickPhotoAfter()">
+        <img *ngIf="photoAfter" [src]="photoAfter" class="photo-preview"/>
+        <div *ngIf="!photoAfter && !photoAfterUploaded" class="photo-placeholder">
+          <ion-icon name="camera-outline"></ion-icon>
+          <span>Ketuk untuk ambil foto</span>
+        </div>
+        <div *ngIf="!photoAfter && photoAfterUploaded" class="photo-already-uploaded">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Foto sudah diupload</span>
+        </div>
+        <div *ngIf="photoAfter && photoAfterUploaded" class="uploaded-overlay">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+      </div>
+      <ion-button expand="block"
+        [class]="photoAfterUploaded ? 'btn-upload btn-uploaded' : 'btn-upload'"
+        [disabled]="!photoAfter || isUploadingAfter || photoAfterUploaded"
+        (click)="uploadPhotoAfter()">
+        <ion-spinner name="crescent" *ngIf="isUploadingAfter" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isUploadingAfter && !photoAfterUploaded" name="cloud-upload-outline" slot="start"></ion-icon>
+        <ion-icon *ngIf="photoAfterUploaded" name="checkmark-circle-outline" slot="start"></ion-icon>
+        {{ isUploadingAfter ? 'Mengunggah...' : (photoAfterUploaded ? 'Sudah Diupload' : 'Upload Foto Sesudah') }}
+      </ion-button>
+    </div>
+
+    <div class="complete-section">
+      <ion-button expand="block" class="btn-complete" [disabled]="isCompleting" (click)="confirmComplete()">
+        <ion-spinner name="crescent" *ngIf="isCompleting" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isCompleting" name="checkmark-circle-outline" slot="start"></ion-icon>
+        {{ isCompleting ? 'Memproses...' : 'Selesaikan Pekerjaan' }}
+      </ion-button>
+    </div>
+
+  </div>
+
+</ion-content>

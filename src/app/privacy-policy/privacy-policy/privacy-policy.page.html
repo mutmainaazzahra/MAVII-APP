@@ -1,0 +1,79 @@
+<ion-content class="pp-content">
+
+  <div class="pp-header">
+    <div class="pp-logo">
+      <img src="assets/icon/icon.png" alt="MAVII" class="pp-logo-img"/>
+    </div>
+    <h1 class="pp-title">Kebijakan Privasi</h1>
+    <p class="pp-subtitle">MAVII — Field Service Management System</p>
+  </div>
+
+  <div class="pp-body">
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">1. Informasi yang Kami Kumpulkan</h3>
+      <p class="pp-text">Aplikasi MAVII mengumpulkan informasi berikut untuk mendukung operasional layanan lapangan:</p>
+      <ul class="pp-list">
+        <li>Data akun: nama, email, dan nomor telepon teknisi.</li>
+        <li>Data lokasi: koordinat GPS (latitude & longitude) yang dikirim secara berkala saat teknisi berstatus online dan sedang mengerjakan tugas.</li>
+        <li>Foto bukti pekerjaan yang diunggah oleh teknisi sebagai proof of work.</li>
+        <li>Data aktivitas pekerjaan: status tugas, catatan, dan progress pekerjaan.</li>
+      </ul>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">2. Penggunaan Informasi</h3>
+      <p class="pp-text">Data yang dikumpulkan digunakan untuk:</p>
+      <ul class="pp-list">
+        <li>Mengelola penugasan pekerjaan antara admin dan teknisi lapangan.</li>
+        <li>Memantau lokasi teknisi secara real-time oleh admin/dispatcher.</li>
+        <li>Menyimpan riwayat pekerjaan yang telah diselesaikan.</li>
+        <li>Meningkatkan kualitas layanan operasional lapangan.</li>
+      </ul>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">3. Penggunaan Lokasi</h3>
+      <p class="pp-text">Aplikasi ini memerlukan akses lokasi perangkat Anda. Lokasi hanya diambil dan dikirim ke server saat Anda berstatus <strong>Online</strong> dan sedang menjalankan tugas. Data lokasi tidak dibagikan kepada pihak ketiga di luar sistem MAVII.</p>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">4. Keamanan Data</h3>
+      <p class="pp-text">Seluruh data dikirim melalui koneksi terenkripsi (HTTPS). Kata sandi disimpan dalam format hash dan tidak dapat dibaca oleh siapapun. Akses ke data dibatasi berdasarkan peran pengguna (role-based access control).</p>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">5. Penyimpanan Data</h3>
+      <p class="pp-text">Data disimpan pada server yang dikelola oleh tim MAVII. Foto bukti pekerjaan disimpan di server dan dapat diakses oleh admin yang berwenang. Data riwayat pekerjaan disimpan untuk keperluan dokumentasi dan audit operasional.</p>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">6. Hak Pengguna</h3>
+      <p class="pp-text">Anda berhak untuk memperbarui data profil Anda melalui menu pengaturan. Untuk penghapusan akun atau data, hubungi administrator sistem Anda.</p>
+    </div>
+
+    <div class="pp-section">
+      <h3 class="pp-section-title">7. Perubahan Kebijakan</h3>
+      <p class="pp-text">Kebijakan privasi ini dapat diperbarui sewaktu-waktu. Pengguna akan diberitahu melalui aplikasi jika terdapat perubahan signifikan.</p>
+    </div>
+
+  </div>
+
+  <div class="pp-footer">
+    <div class="pp-agree-row" (click)="isAgreed = !isAgreed">
+      <div class="pp-checkbox" [class.checked]="isAgreed">
+        <ion-icon name="checkmark-outline" *ngIf="isAgreed"></ion-icon>
+      </div>
+      <p class="pp-agree-text">Saya telah membaca dan menyetujui Kebijakan Privasi MAVII</p>
+    </div>
+    <ion-button
+      expand="block"
+      class="btn-agree"
+      [disabled]="!isAgreed"
+      (click)="acceptAndContinue()">
+      Setuju & Lanjutkan
+      <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+    </ion-button>
+  </div>
+
+</ion-content>

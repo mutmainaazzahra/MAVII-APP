@@ -1,0 +1,116 @@
+@import "~@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import "~@ionic/angular/css/display.css";
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+* {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  background-color: #f4f5f8 !important;
+}
+
+ion-app {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  background-color: #f4f5f8 !important;
+}
+
+ion-back-button {
+  --icon-font-size: 24px;
+  --padding-start: 16px;
+  --padding-end: 8px;
+  &::part(text) {
+    display: none;
+  }
+  --color: #ffffff;
+}
+
+ion-buttons[slot="end"] {
+  --padding-end: 16px;
+}
+
+ion-toolbar {
+  --min-height: 56px;
+  ion-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+ion-content {
+  --background: #f4f5f8;
+}
+
+ion-refresher-content {
+  --background: transparent;
+  --color: var(--ion-text-color, #1f2937);
+  background: transparent;
+}
+
+ion-refresher-content ion-spinner,
+ion-refresher-content .refresher-pulling-icon,
+ion-refresher-content .refresher-refreshing-icon {
+  color: var(--ion-text-color, #1f2937) !important;
+}
+
+ion-refresher {
+  background: transparent;
+}
+
+ion-tab-bar {
+  --background: #ffffff;
+  --border: none;
+  height: calc(65px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-tab-button {
+  --color: #92949c;
+  --color-selected: var(--mavii-orange);
+}
+
+ion-skeleton-text {
+  --border-radius: 8px;
+}
+
+.hide-tabs ion-tab-bar {
+  display: none !important;
+}
+
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  opacity: 0.6 !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+.alert-wrapper {
+  background: #ffffff !important;
+
+  .alert-head {
+    .alert-title {
+      color: #000000 !important;
+    }
+    .alert-sub-title {
+      color: #333333 !important;
+    }
+  }
+
+  .alert-message {
+    color: #333333 !important;
+  }
+
+  .alert-input {
+    color: #000000 !important;
+  }
+}

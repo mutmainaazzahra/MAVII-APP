@@ -1,0 +1,11 @@
+<!-- Banner offline (abu) -->
+<div class="banner banner-offline" *ngIf="!isOnline">
+  <ion-icon name="cloud-offline-outline"></ion-icon>
+  <span>Kamu sedang offline</span>
+</div>
+
+<!-- Banner online kembali (hijau) -->
+<div class="banner banner-online" *ngIf="isOnline && showOnlineBanner">
+  <ion-icon name="cloud-done-outline"></ion-icon>
+  <span>Koneksi kembali online</span>
+</div>

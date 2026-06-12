@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176605857532",
+    "project_id": "mavii-e7105",
+    "storage_bucket": "mavii-e7105.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176605857532:android:b927dd6d53d0bc6d0cf979",
+        "android_client_info": {
+          "package_name": "com.fsms.mavii"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv5BHKYIrW-suEN2fOvAXgtsbU8dv_ELQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

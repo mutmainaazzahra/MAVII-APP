@@ -1,0 +1,52 @@
+.home-content { --background: #ffffff; }
+
+.home-wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  padding-bottom: 120px;
+}
+
+.home-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.icon-wrapper {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  &.animate { opacity: 1; transform: translateY(0); }
+  .mavii-icon { width: 240px; height: 240px; object-fit: contain; }
+}
+
+.text-wrapper {
+  opacity: 0;
+  margin-top: -50px;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+  &.animate { opacity: 1; transform: translateY(0); }
+  .brand-desc { font-size: 13px; font-weight: 600; color: var(--mavii-blue); line-height: 1.4; margin: 0; white-space: nowrap; }
+}
+
+.btn-wrapper {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease 0.4s, transform 0.7s ease 0.4s;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  &.animate { opacity: 1; transform: translateY(0); }
+  .btn-login { --background: var(--mavii-orange); --background-activated: #d27d01; --border-radius: 50px; --color: #ffffff; font-weight: 700; font-size: 16px; height: 54px; width: 280px; }
+}
+
+@media (min-width: 768px) {
+  .home-center { max-width: 400px; margin: 0 auto; }
+  .home-wrapper { padding-bottom: 80px; }
+}

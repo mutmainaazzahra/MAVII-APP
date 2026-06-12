@@ -1,0 +1,19 @@
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="home-wrapper">
+    <div class="home-center">
+
+      <div class="icon-wrapper" [class.animate]="isAnimated">
+        <img src="assets/icon/icon.png" alt="MAVII" class="mavii-icon"/>
+      </div>
+
+      <div class="text-wrapper" [class.animate]="isAnimated">
+        <p class="brand-desc">Manajemen Asisten Visual Infrastruktur Internet</p>
+      </div>
+
+      <div class="btn-wrapper" [class.animate]="isAnimated">
+        <ion-button expand="block" class="btn-login" (click)="goToLogin()">Login</ion-button>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

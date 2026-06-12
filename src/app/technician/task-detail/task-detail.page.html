@@ -1,0 +1,158 @@
+<ion-header class="ion-no-border" *ngIf="!showFullMap">
+  <ion-toolbar class="detail-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Task Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openInfoModal()">
+        <ion-icon name="clipboard-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content">
+
+  <div *ngIf="isLoading" style="padding:16px;">
+    <ion-skeleton-text animated style="height:200px;border-radius:0;"></ion-skeleton-text>
+    <ion-skeleton-text animated style="height:20px;width:60%;border-radius:8px;margin-top:16px;"></ion-skeleton-text>
+  </div>
+
+  <div *ngIf="!isLoading && task">
+
+    <div class="map-preview" (click)="openFullMap()">
+      <div id="task-map" class="map-container"></div>
+      <div class="map-tap-hint">
+        <ion-icon name="expand-outline"></ion-icon>
+        <span>Ketuk untuk peta penuh</span>
+      </div>
+    </div>
+
+    <div class="main-card">
+
+      <div class="menu-row" (click)="openTindakanModal()">
+        <div class="row-left">
+          <div class="row-icon"><ion-icon name="build-outline"></ion-icon></div>
+          <span class="row-text">Tindakan</span>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="row-chevron"></ion-icon>
+      </div>
+      <div class="divider"></div>
+
+      <div class="menu-row" (click)="openCatatanModal()">
+        <div class="row-left">
+          <div class="row-icon"><ion-icon name="create-outline"></ion-icon></div>
+          <span class="row-text">Catatan</span>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="row-chevron"></ion-icon>
+      </div>
+      <div class="divider"></div>
+
+      <div class="menu-row">
+        <div class="row-left">
+          <div class="row-icon"><ion-icon name="wifi-outline"></ion-icon></div>
+          <div class="row-text-col">
+            <span class="row-text">Gangguan</span>
+            <span class="row-subtext">{{ task.description || task.title || '-' }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+
+      <div class="menu-row">
+        <div class="row-left">
+          <div class="row-icon"><ion-icon name="git-branch-outline"></ion-icon></div>
+          <span class="row-text">Status</span>
+        </div>
+        <app-status-badge [status]="task.status"></app-status-badge>
+      </div>
+      <div class="divider"></div>
+
+      <ion-button expand="block" class="btn-action" (click)="goToJobExecution()">
+        <ion-icon name="camera-outline" slot="start"></ion-icon>
+        Upload Photo
+      </ion-button>
+
+      <ion-button expand="block" class="btn-action" *ngIf="task.status === 'accepted'" (click)="startTask()">
+        <ion-icon name="play-circle-outline" slot="start"></ion-icon>
+        Mulai Pekerjaan
+      </ion-button>
+
+    </div>
+
+    <div class="location-section">
+      <p class="location-title">Lokasi Tugas</p>
+      <div class="location-info">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>{{ task.location_name || 'Lokasi tidak tersedia' }}</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="fullmap-wrapper" *ngIf="showFullMap">
+    <div id="task-map-full" class="fullmap"></div>
+    <button class="fullmap-close-btn" (click)="closeFullMap()">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+    <div class="map-legend">
+      <div class="legend-item"><span class="dot dot-blue"></span> Lokasi Anda</div>
+      <div class="legend-item"><span class="dot dot-red"></span> Lokasi Tugas</div>
+    </div>
+  </div>
+
+</ion-content>
+
+<div class="modal-overlay" *ngIf="showInfoModal || showCatatanModal || showTindakanModal" (click)="closeAllModals()"></div>
+
+<div class="modal-box" *ngIf="showInfoModal" (click)="$event.stopPropagation()">
+  <div class="modal-head">
+    <div class="modal-head-left">
+      <ion-icon name="clipboard-outline"></ion-icon>
+      <span>Informasi Pelanggan</span>
+    </div>
+    <ion-icon name="close-outline" class="modal-close" (click)="closeInfoModal()"></ion-icon>
+  </div>
+  <p class="modal-desc">Info lebih lanjut tentang pelanggan ini</p>
+  <div class="info-list">
+    <div class="info-item">
+      <span class="info-key">Nama</span>
+      <span class="info-val">{{ task?.customer_name || task?.title || '-' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-key">Telepon</span>
+      <span class="info-val">{{ task?.customer_phone || '-' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-key">Lokasi</span>
+      <span class="info-val">{{ task?.location_name || '-' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-key">Gangguan</span>
+      <span class="info-val">{{ task?.description || task?.title || '-' }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="modal-box" *ngIf="showCatatanModal" (click)="$event.stopPropagation()">
+  <div class="modal-head">
+    <div class="modal-head-left"><ion-icon name="create-outline"></ion-icon><span>Catatan</span></div>
+    <ion-icon name="close-outline" class="modal-close" (click)="closeCatatanModal()"></ion-icon>
+  </div>
+  <p class="modal-desc">Tinggalkan catatan di sini</p>
+  <ion-textarea [(ngModel)]="catatan" placeholder="Tulis catatan pekerjaan..." [rows]="5" fill="outline" class="modal-input"></ion-textarea>
+  <ion-button expand="block" class="btn-simpan" (click)="saveCatatan()">Simpan</ion-button>
+</div>
+
+<div class="modal-box" *ngIf="showTindakanModal" (click)="$event.stopPropagation()">
+  <div class="modal-head">
+    <div class="modal-head-left"><ion-icon name="build-outline"></ion-icon><span>Tindakan</span></div>
+    <ion-icon name="close-outline" class="modal-close" (click)="closeTindakanModal()"></ion-icon>
+  </div>
+  <p class="modal-desc">Tinggalkan keterangan tindakan di sini</p>
+  <ion-textarea [(ngModel)]="tindakan" placeholder="Tulis tindakan yang dilakukan..." [rows]="5" fill="outline" class="modal-input"></ion-textarea>
+  <ion-button expand="block" class="btn-simpan" (click)="saveTindakan()">Simpan</ion-button>
+</div>

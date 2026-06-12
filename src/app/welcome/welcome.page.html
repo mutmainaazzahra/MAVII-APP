@@ -1,0 +1,33 @@
+<ion-content [fullscreen]="true" class="welcome-content">
+  <div class="welcome-container">
+
+    <div class="slide-image-wrapper">
+      <img *ngIf="slides[currentSlide]" [src]="slides[currentSlide].image" [alt]="slides[currentSlide].title" class="slide-image"/>
+    </div>
+
+    <div class="slide-content">
+      <h2 class="slide-title">{{ slides[currentSlide].title }}</h2>
+      <p class="slide-description">{{ slides[currentSlide].description }}</p>
+
+      <div class="dots-container">
+        <span class="dot" *ngFor="let slide of slides; let i = index"
+          [class.dot-active]="i === currentSlide" (click)="currentSlide = i"></span>
+      </div>
+
+      <div class="slide-actions">
+        <ion-button fill="clear" class="btn-skip" (click)="skipSlides()">SKIP</ion-button>
+
+        <ion-button class="btn-next" (click)="nextSlide()" *ngIf="!isLastSlide()">
+          NEXT
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+
+        <ion-button class="btn-get-started" (click)="goToPrivacyPolicy()" *ngIf="isLastSlide()">
+          Get Started
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

@@ -1,0 +1,152 @@
+<ion-header class="ion-no-border" *ngIf="!showLocationMap">
+  <ion-toolbar class="task-toolbar">
+    <div class="header-content">
+      <div class="user-info" (click)="goToProfile()">
+        <div class="user-avatar">
+          <img *ngIf="profilePhoto" [src]="profilePhoto" class="avatar-img" alt="avatar"
+               (error)="onAvatarError()"/>
+          <span *ngIf="!profilePhoto" class="avatar-initial">{{ getUserInitial() }}</span>
+        </div>
+        <div class="user-text">
+          <span class="welcome-text">Welcome,</span>
+          <span class="user-name">{{ user?.name || 'Technician' }}</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="notif-btn" (click)="toggleNotifPanel()">
+          <ion-icon name="notifications-outline"></ion-icon>
+          <span class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+        </div>
+        <ion-button class="status-btn" [class.btn-online]="isWorkerOnline" [class.btn-offline]="!isWorkerOnline" (click)="toggleWorkerStatus()">
+          {{ isWorkerOnline ? 'Online' : 'Offline' }}
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="task-content">
+
+  <div class="notif-overlay" *ngIf="showNotifPanel" (click)="toggleNotifPanel()"></div>
+  <div class="notif-modal" *ngIf="showNotifPanel" (click)="$event.stopPropagation()">
+    <div class="notif-header">
+      <span>Notifikasi</span>
+      <div class="notif-actions">
+        <ion-icon name="checkmark-done-outline" class="notif-icon-readall" (click)="markAllAsRead()"></ion-icon>
+        <ion-icon name="trash-outline" class="notif-icon-clear" (click)="clearNotifications()"></ion-icon>
+      </div>
+    </div>
+    <div class="notif-empty" *ngIf="notifications.length === 0">
+      <ion-icon name="notifications-off-outline"></ion-icon>
+      <span>Tidak ada notifikasi</span>
+    </div>
+    <div class="notif-item" [class.notif-unread]="!notif.read" *ngFor="let notif of notifications" (click)="onNotifItemClick(notif)">
+      <div class="notif-icon-wrap"><ion-icon name="clipboard-outline"></ion-icon></div>
+      <div class="notif-content">
+        <p class="notif-title">{{ notif.title }}</p>
+        <p class="notif-desc">{{ notif.message }}</p>
+        <p class="notif-time">{{ notif.time }}</p>
+      </div>
+      <div class="notif-dot" *ngIf="!notif.read"></div>
+    </div>
+    <ion-button expand="block" fill="clear" class="notif-close-btn" (click)="toggleNotifPanel()">Tutup</ion-button>
+  </div>
+
+  <app-offline-banner></app-offline-banner>
+
+  <div class="info-banner">
+    <ion-icon name="warning-outline"></ion-icon>
+    <span>Sebelum memulai bekerja, jangan lupa ubah status menjadi <strong>online</strong> terlebih dahulu.</span>
+  </div>
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadTasks($event)">
+    <ion-refresher-content pullingIcon="chevron-down-outline" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
+
+  <app-skeleton-loader [count]="3" *ngIf="isLoading"></app-skeleton-loader>
+
+  <div *ngIf="!isLoading">
+
+    <div *ngIf="getAssignedTasks().length > 0">
+      <p class="section-label">Menunggu Konfirmasi</p>
+      <div class="task-card" *ngFor="let task of getAssignedTasks()">
+        <div class="task-card-header">
+          <div class="location-clickable" (click)="openLocationMap(task, $event)">
+            <ion-icon name="location" class="loc-icon"></ion-icon>
+            <span class="task-location">{{ task.location_name || 'Lokasi tidak tersedia' }}</span>
+          </div>
+        </div>
+        <div class="task-info">
+          <div class="task-info-row">
+            <ion-icon name="person-outline"></ion-icon>
+            <span class="info-label">Pelanggan</span>
+            <span class="info-value">{{ task.customer_name || task.title || '-' }}</span>
+          </div>
+          <div class="task-info-row">
+            <ion-icon name="construct-outline"></ion-icon>
+            <span class="info-label">Gangguan</span>
+            <span class="info-value">{{ task.description || task.title || '-' }}</span>
+          </div>
+          <div class="task-info-row">
+            <ion-icon name="location-outline"></ion-icon>
+            <span class="info-label">Lokasi</span>
+            <span class="info-value">{{ task.location_name || '-' }}</span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <ion-button class="btn-reject" (click)="confirmAction(task, 'reject')">Reject</ion-button>
+          <ion-button class="btn-accept" (click)="confirmAction(task, 'accept')">Accept</ion-button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="getActiveTasks().length > 0">
+      <p class="section-label">Tugas Aktif</p>
+      <div class="task-card task-card-active" *ngFor="let task of getActiveTasks()" (click)="goToDetail(task.id)">
+        <div class="task-card-header">
+          <div class="location-clickable" (click)="openLocationMap(task, $event)">
+            <ion-icon name="location" class="loc-icon"></ion-icon>
+            <span class="task-location">{{ task.location_name || 'Lokasi tidak tersedia' }}</span>
+          </div>
+          <app-status-badge [status]="task.status"></app-status-badge>
+        </div>
+        <div class="task-info">
+          <div class="task-info-row">
+            <ion-icon name="person-outline"></ion-icon>
+            <span class="info-label">Pelanggan</span>
+            <span class="info-value">{{ task.customer_name || task.title || '-' }}</span>
+          </div>
+          <div class="task-info-row">
+            <ion-icon name="construct-outline"></ion-icon>
+            <span class="info-label">Gangguan</span>
+            <span class="info-value">{{ task.description || task.title || '-' }}</span>
+          </div>
+          <div class="task-info-row">
+            <ion-icon name="location-outline"></ion-icon>
+            <span class="info-label">Lokasi</span>
+            <span class="info-value">{{ task.location_name || '-' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="getAssignedTasks().length === 0 && getActiveTasks().length === 0">
+      <ion-icon name="clipboard-outline"></ion-icon>
+      <h3>Tidak ada tugas</h3>
+      <p>Belum ada tugas yang diberikan saat ini</p>
+    </div>
+
+  </div>
+
+  <div class="fullmap-wrapper" *ngIf="showLocationMap">
+    <div id="location-map" class="fullmap"></div>
+    <button class="fullmap-close-btn" (click)="closeLocationMap()">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+    <div class="map-legend">
+      <div class="legend-item"><span class="dot dot-blue"></span> Lokasi Anda</div>
+      <div class="legend-item"><span class="dot dot-red"></span> Lokasi Tugas</div>
+    </div>
+  </div>
+
+</ion-content>

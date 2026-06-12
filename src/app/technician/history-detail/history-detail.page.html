@@ -1,0 +1,126 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="detail-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/technician/tabs/history" icon="arrow-back-outline" (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>History Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="downloadPdf()">
+        <ion-icon name="download-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="detail-content">
+
+  <div *ngIf="isLoading" style="padding:16px;">
+    <ion-skeleton-text animated style="height:80px;border-radius:12px;margin-bottom:12px;"></ion-skeleton-text>
+    <ion-skeleton-text animated style="height:140px;border-radius:12px;margin-bottom:12px;"></ion-skeleton-text>
+    <ion-skeleton-text animated style="height:100px;border-radius:12px;"></ion-skeleton-text>
+  </div>
+
+  <div *ngIf="!isLoading && task">
+
+    <div class="top-card">
+      <div class="top-left">
+        <div class="top-avatar">{{ (task.customer_name || task.title || 'T').charAt(0).toUpperCase() }}</div>
+        <div class="top-info">
+          <span class="top-title">{{ task.customer_name || task.title }}</span>
+          <span class="top-date">{{ formatDate(task.completed_at || task.updated_at) }}</span>
+        </div>
+      </div>
+      <span class="status-badge" [class.badge-finished]="task.status === 'completed'" [class.badge-canceled]="task.status === 'rejected'">
+        {{ getStatusLabel(task.status) }}
+      </span>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Informasi Pelanggan</h3>
+      <div class="info-row">
+        <ion-icon name="person-outline"></ion-icon>
+        <span class="info-key">Nama</span>
+        <span class="info-val">{{ task.customer_name || task.title || '-' }}</span>
+      </div>
+      <div class="info-row">
+        <ion-icon name="call-outline"></ion-icon>
+        <span class="info-key">Telepon</span>
+        <span class="info-val">{{ task.customer_phone || '-' }}</span>
+      </div>
+      <div class="info-row last">
+        <ion-icon name="location-outline"></ion-icon>
+        <span class="info-key">Alamat</span>
+        <span class="info-val">{{ task.location_name || '-' }}</span>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Detail Pekerjaan</h3>
+      <div class="detail-row last">
+        <span class="detail-key">Jenis Gangguan</span>
+        <span class="detail-val">{{ task.description || task.title || '-' }}</span>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Teknisi</h3>
+      <div class="detail-row">
+        <span class="detail-key">Nama</span>
+        <span class="detail-val">{{ user?.name || '-' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Email</span>
+        <span class="detail-val">{{ user?.email || '-' }}</span>
+      </div>
+      <div class="detail-row last">
+        <span class="detail-key">Telepon</span>
+        <span class="detail-val">{{ user?.phone || '-' }}</span>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Tindakan</h3>
+      <div *ngIf="!getTindakan()" class="empty-note">
+        <ion-icon name="build-outline"></ion-icon>
+        <p>Tidak ada tindakan tercatat</p>
+      </div>
+      <p class="tindakan-text" *ngIf="getTindakan()">{{ getTindakan() }}</p>
+    </div>
+
+    <div class="section-card">
+      <h3 class="section-title">Catatan</h3>
+      <div *ngIf="!getCatatan()" class="empty-note">
+        <ion-icon name="document-text-outline"></ion-icon>
+        <p>Tidak ada catatan</p>
+      </div>
+      <p class="tindakan-text" *ngIf="getCatatan()">{{ getCatatan() }}</p>
+    </div>
+
+    <div class="section-card" style="margin-bottom:100px;">
+      <h3 class="section-title">Bukti Pekerjaan</h3>
+      <div *ngIf="getAllProofs().length === 0" class="empty-note">
+        <ion-icon name="images-outline"></ion-icon>
+        <p>Tidak ada bukti pekerjaan</p>
+      </div>
+      <div class="proof-grid" *ngIf="getAllProofs().length > 0">
+        <div class="proof-item" *ngFor="let proof of getAllProofs()">
+          <p class="proof-type-label">
+            {{ (proof.note || proof.caption || '').toLowerCase().includes('sebelum') ? 'Foto Sebelum' :
+               (proof.note || proof.caption || '').toLowerCase().includes('sesudah') ? 'Foto Sesudah' : 'Bukti Pekerjaan' }}
+          </p>
+          <img [src]="getPhotoUrl(proof.photo_path)" class="proof-img" alt="Bukti"
+               (error)="$event.target.style.display='none'"/>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>
+
+<ion-footer class="footer-share" *ngIf="!isLoading && task">
+  <ion-button expand="block" class="btn-share" (click)="showShareOptions()">
+    <ion-icon name="share-social-outline" slot="start"></ion-icon>
+    Share Report
+  </ion-button>
+</ion-footer>

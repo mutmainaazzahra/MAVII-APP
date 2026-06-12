@@ -1,0 +1,39 @@
+ion-chip {
+  font-size: 12px;
+  font-weight: 700;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 20px;
+  margin: 0;
+
+  ion-icon {
+    font-size: 14px;
+    margin-right: 4px;
+  }
+}
+
+.chip-assigned {
+  --background: rgba(255, 193, 7, 0.15);
+  --color: #856404;
+}
+
+.chip-accepted {
+  --background: rgba(45, 211, 111, 0.15);
+  --color: #1a7a45;
+}
+
+.chip-ongoing,
+.chip-on-going {
+  --background: rgba(61, 194, 255, 0.15);
+  --color: #0077b6;
+}
+
+.chip-completed {
+  --background: rgba(146, 148, 156, 0.15);
+  --color: #4a4a4a;
+}
+
+.chip-rejected {
+  --background: rgba(235, 68, 90, 0.15);
+  --color: #9b1c2e;
+}

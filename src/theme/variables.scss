@@ -1,0 +1,70 @@
+:root {
+  --ion-color-primary: #131DAA;
+  --ion-color-primary-rgb: 19, 29, 170;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #111896;
+  --ion-color-primary-tint: #2b34b3;
+
+  --ion-color-secondary: #EF8E01;
+  --ion-color-secondary-rgb: 239, 142, 1;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #d27d01;
+  --ion-color-secondary-tint: #f19a1a;
+
+  --ion-color-success: #2DD36F;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-shade: #28bb62;
+  --ion-color-success-tint: #42d77d;
+
+  --ion-color-warning: #FFC107;
+  --ion-color-warning-rgb: 255, 193, 7;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-shade: #e0aa06;
+  --ion-color-warning-tint: #ffc720;
+
+  --ion-color-danger: #EB445A;
+  --ion-color-danger-rgb: 235, 68, 90;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-shade: #cf3c4f;
+  --ion-color-danger-tint: #ed576b;
+
+  --ion-color-medium: #92949C;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  --ion-color-light: #F4F5F8;
+  --ion-color-light-rgb: 244, 245, 248;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-shade: #d7d8da;
+  --ion-color-light-tint: #f5f6f9;
+
+  --mavii-blue: #131DAA;
+  --mavii-orange: #EF8E01;
+  --mavii-bg: #F4F5F8;
+  --mavii-card-bg: #FFFFFF;
+  --mavii-text-primary: #1a1a2e;
+  --mavii-text-secondary: #6c757d;
+  --mavii-border-radius: 16px;
+  --mavii-border-radius-pill: 50px;
+  --mavii-shadow: 0 4px 20px rgba(19, 29, 170, 0.15);
+
+  --status-assigned: #FFC107;
+  --status-accepted: #2DD36F;
+  --status-ongoing: #3DC2FF;
+  --status-completed: #92949C;
+  --status-rejected: #EB445A;
+}
+
+.custom-toast-white {
+  --background: #ffffff;
+  --color: #000000;
+  --button-color: var(--mavii-blue, #131DAA);
+  --border-radius: 12px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
