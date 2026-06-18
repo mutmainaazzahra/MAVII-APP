@@ -56,15 +56,15 @@
       <div class="modal-form">
         <div class="form-group">
           <p class="form-label">Name</p>
-          <input type="text" [(ngModel)]="formName" class="form-input" placeholder="Enter full name"/>
+          <input type="text" [(ngModel)]="formName" class="form-input" placeholder="Enter full name" autocomplete="off"/>
         </div>
         <div class="form-group">
           <p class="form-label">Email</p>
-          <input type="email" [(ngModel)]="formEmail" class="form-input form-input-disabled" disabled/>
+          <input type="email" [(ngModel)]="formEmail" class="form-input form-input-disabled" disabled autocomplete="off"/>
         </div>
         <div class="form-group">
           <p class="form-label">Phone Number</p>
-          <input type="tel" [(ngModel)]="formPhone" class="form-input" placeholder="Enter phone number"/>
+          <input type="tel" [(ngModel)]="formPhone" class="form-input" placeholder="Enter phone number" autocomplete="off"/>
         </div>
 
         <div class="change-pw-toggle" (click)="toggleChangePassword()">
@@ -81,7 +81,8 @@
                 [(ngModel)]="formCurrentPassword"
                 class="form-input"
                 placeholder="Masukkan password saat ini"
-                style="padding-right: 44px; width: 100%;"/>
+                style="padding-right: 44px; width: 100%;"
+                autocomplete="off"/>
               <ion-icon
                 [name]="showCurrentPw ? 'eye-outline' : 'eye-off-outline'"
                 (click)="showCurrentPw = !showCurrentPw"
@@ -97,7 +98,8 @@
                 [(ngModel)]="formNewPassword"
                 class="form-input"
                 placeholder="Minimal 6 karakter"
-                style="padding-right: 44px; width: 100%;"/>
+                style="padding-right: 44px; width: 100%;"
+                autocomplete="new-password"/>
               <ion-icon
                 [name]="showNewPw ? 'eye-outline' : 'eye-off-outline'"
                 (click)="showNewPw = !showNewPw"
@@ -113,7 +115,8 @@
                 [(ngModel)]="formNewPasswordConfirmation"
                 class="form-input"
                 placeholder="Ulangi password baru"
-                style="padding-right: 44px; width: 100%;"/>
+                style="padding-right: 44px; width: 100%;"
+                autocomplete="new-password"/>
               <ion-icon
                 [name]="showConfirmPw ? 'eye-outline' : 'eye-off-outline'"
                 (click)="showConfirmPw = !showConfirmPw"

@@ -66,12 +66,11 @@ export class OfflineInterceptor implements HttpInterceptor {
             break;
           case 422:
             break;
-          case 500:
-            this.showToast(
-              'Terjadi kesalahan pada server. Coba lagi nanti.',
-              'danger',
-            );
+          case 500: {
+            const msg = error.error?.message || 'Terjadi kesalahan pada server. Coba lagi nanti.';
+            this.showToast(msg, 'danger');
             break;
+          }
           default:
             if (error.status >= 400) {
               this.showToast('Terjadi kesalahan. Silakan coba lagi.', 'danger');

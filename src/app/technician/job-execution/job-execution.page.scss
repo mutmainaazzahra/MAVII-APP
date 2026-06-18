@@ -92,7 +92,7 @@
 }
 
 .complete-section {
-  padding: 8px 16px 40px;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
   .btn-complete {
     --background: var(--mavii-orange);
     --background-activated: #d27d01;

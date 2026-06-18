@@ -101,17 +101,15 @@ export class TaskListPage implements OnInit, OnDestroy {
 
   private normalizeAvatar(avatar: string | undefined): string | null {
     if (!avatar) return null;
-    if (this.isValidPhotoUrl(avatar)) return avatar;
+    if (avatar.startsWith('http') || avatar.startsWith('https') || avatar.startsWith('data:')) return avatar;
+
     let base = environment.apiUrl;
     if (base.endsWith('/')) base = base.slice(0, -1);
-    const cleanAvatar = avatar.startsWith('/') ? avatar.slice(1) : avatar;
-    if (cleanAvatar.startsWith('avatars/')) {
-      return `${base}/storage/${cleanAvatar}`;
-    }
-    if (cleanAvatar.startsWith('storage/')) {
-      return `${base}/${cleanAvatar}`;
-    }
-    return `${base}/${cleanAvatar}`;
+
+    const parts = avatar.split('/');
+    const filename = parts[parts.length - 1];
+
+    return `${base}/storage/avatars/${filename}?t=${new Date().getTime()}`;
   }
 
   private async fetchAvatarAsDataUrl(url: string): Promise<string | null> {
@@ -176,12 +174,12 @@ export class TaskListPage implements OnInit, OnDestroy {
 
   async toggleWorkerStatus() {
     if (this.isWorkerOnline) {
-      const hasOnGoing = this.tasks.some((t) => t.status === 'on-going');
-      if (hasOnGoing) {
+      const hasActiveTask = this.tasks.some((t) => t.status === 'accepted' || t.status === 'on-going');
+      if (hasActiveTask) {
         const alert = await this.alertCtrl.create({
           header: 'Tidak Bisa Offline',
           message:
-            'Anda memiliki tugas yang sedang berjalan (on-going). Selesaikan terlebih dahulu sebelum mengubah status menjadi offline.',
+            'Anda memiliki tugas yang belum selesai. Selesaikan tugas tersebut terlebih dahulu sebelum mengubah status menjadi offline.',
           buttons: [{ text: 'OK', role: 'cancel' }],
         });
         await alert.present();
@@ -381,10 +379,11 @@ export class TaskListPage implements OnInit, OnDestroy {
     const taskLat = this.selectedTask.latitude;
     const taskLng = this.selectedTask.longitude;
 
-    this.locationMap = L.map('location-map', { zoomControl: true }).setView(
+    this.locationMap = L.map('location-map', { zoomControl: false }).setView(
       [taskLat, taskLng],
       14,
     );
+    L.control.zoom({ position: 'topleft' }).addTo(this.locationMap);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(
       this.locationMap,
     );
@@ -638,6 +637,16 @@ export class TaskListPage implements OnInit, OnDestroy {
   }
 
   async confirmAction(task: TaskList, action: 'accept' | 'reject') {
+    if (!this.isWorkerOnline) {
+      const alert = await this.alertCtrl.create({
+        header: 'Status Offline',
+        message: 'Anda harus mengubah status menjadi Online terlebih dahulu sebelum dapat memproses tugas.',
+        buttons: ['OK']
+      });
+      await alert.present();
+      return;
+    }
+
     if (action === 'accept') {
       if (this.hasActiveTask()) {
         const alert = await this.alertCtrl.create({

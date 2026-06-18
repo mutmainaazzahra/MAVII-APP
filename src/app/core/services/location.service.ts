@@ -37,7 +37,7 @@ export class LocationService {
     longitude: number;
     accuracy: number;
   }> {
-    // Try high accuracy first
+    
     try {
       const pos = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
@@ -49,7 +49,7 @@ export class LocationService {
         accuracy: pos.coords.accuracy,
       };
     } catch {
-      // Fallback: low accuracy + accept cached position (5 minutes old)
+      
       const pos = await Geolocation.getCurrentPosition({
         enableHighAccuracy: false,
         timeout: 20000,

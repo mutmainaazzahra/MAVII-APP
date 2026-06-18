@@ -36,27 +36,16 @@ export class AppComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         try {
           let url = event.url;
-          if (url.startsWith('http://') || url.startsWith('https://')) {
-            const urlObj = new URL(url);
-            if (urlObj.pathname === '/reset-password') {
-              const token = urlObj.searchParams.get('token');
-              const email = urlObj.searchParams.get('email');
-              if (token && email) {
-                this.router.navigate(['/reset-password'], {
-                  queryParams: { token, email },
-                });
-              }
-            }
-          } else if (url.startsWith('mavii://')) {
-            const urlObj = new URL(url);
-            if (urlObj.pathname === '/reset-password') {
-              const token = urlObj.searchParams.get('token');
-              const email = urlObj.searchParams.get('email');
-              if (token && email) {
-                this.router.navigate(['/reset-password'], {
-                  queryParams: { token, email },
-                });
-              }
+          const urlObj = new URL(url);
+          const isResetPassword = urlObj.pathname === '/reset-password' || urlObj.hostname === 'reset-password';
+          
+          if (isResetPassword) {
+            const token = urlObj.searchParams.get('token');
+            const email = urlObj.searchParams.get('email');
+            if (token && email) {
+              this.router.navigate(['/reset-password'], {
+                queryParams: { token, email },
+              });
             }
           }
         } catch (error) {

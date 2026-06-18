@@ -30,8 +30,8 @@ export class JobExecutionPage implements OnInit, OnDestroy {
   isLoading = true;
   isCompleting = false;
 
-  photoBefore: string | null = null; // base64 untuk preview
-  photoBeforeBlob: Blob | null = null; // blob untuk upload
+  photoBefore: string | null = null; 
+  photoBeforeBlob: Blob | null = null; 
   photoBeforeUploaded = false;
   isUploadingBefore = false;
 
@@ -88,7 +88,7 @@ export class JobExecutionPage implements OnInit, OnDestroy {
       if (beforePreview) {
         this.photoBefore = beforePreview;
         if (!this.photoBeforeUploaded) {
-          // Konversi base64 ke blob untuk upload
+          
           const response = await fetch(beforePreview);
           this.photoBeforeBlob = await response.blob();
         }
@@ -165,9 +165,9 @@ export class JobExecutionPage implements OnInit, OnDestroy {
       if (!image.dataUrl) return null;
 
       let blob = await (await fetch(image.dataUrl)).blob();
-      let base64 = image.dataUrl; // default
+      let base64 = image.dataUrl; 
 
-      // Cek apakah file HEIC
+      
       const isHeic =
         blob.type === 'image/heic' ||
         blob.type === 'image/heif' ||
@@ -184,7 +184,7 @@ export class JobExecutionPage implements OnInit, OnDestroy {
           });
           blob = convertedBlob as Blob;
 
-          // Konversi blob hasil konversi ke base64 untuk preview
+          
           base64 = await this.blobToBase64(blob);
           console.log('HEIC conversion success');
         } catch (conversionError) {

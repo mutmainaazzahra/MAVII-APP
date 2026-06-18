@@ -73,7 +73,6 @@ export class AuthService {
   }
 
   updateProfile(data: FormData): Observable<ProfileResponse> {
-    data.append('_method', 'PUT');
     return this.http.post<ProfileResponse>(
       `${this.apiUrl}/api/auth/profile`,
       data,

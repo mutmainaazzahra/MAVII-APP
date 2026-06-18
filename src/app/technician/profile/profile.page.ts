@@ -43,7 +43,7 @@ export class ProfilePage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private locationService: LocationService,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.refreshUserData();
@@ -85,9 +85,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         if (this.user && this.user.avatar) {
           this.user.avatar = this.normalizeAvatarUrl(this.user.avatar);
         }
-        this.profilePhoto = this.user?.avatar
-          ? `${this.user.avatar}?t=${new Date().getTime()}`
-          : null;
+        this.profilePhoto = this.user?.avatar || null;
         const token = await this.authService.getStoredToken();
         if (this.user) {
           await this.authService.saveAuthData(token || '', this.user);
@@ -104,9 +102,7 @@ export class ProfilePage implements OnInit, OnDestroy {
         if (this.user && this.user.avatar) {
           this.user.avatar = this.normalizeAvatarUrl(this.user.avatar);
         }
-        this.profilePhoto = this.user?.avatar
-          ? `${this.user.avatar}?t=${new Date().getTime()}`
-          : null;
+        this.profilePhoto = this.user?.avatar || null;
       }
     }
   }
@@ -121,24 +117,16 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   private normalizeAvatarUrl(url: string): string {
-    if (!url) return url;
-    if (
-      url.startsWith('http://') ||
-      url.startsWith('https://') ||
-      url.startsWith('data:')
-    ) {
-      return url;
-    }
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+
     let baseUrl = environment.apiUrl;
     if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
-    const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
-    if (cleanUrl.startsWith('avatars/')) {
-      return `${baseUrl}/storage/${cleanUrl}`;
-    }
-    if (cleanUrl.startsWith('storage/')) {
-      return `${baseUrl}/${cleanUrl}`;
-    }
-    return `${baseUrl}/${cleanUrl}`;
+
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+
+    return `${baseUrl}/storage/avatars/${filename}?t=${new Date().getTime()}`;
   }
 
   onAvatarError() {
@@ -248,52 +236,45 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
 
     this.isSaving = true;
-
     const formData = new FormData();
     formData.append('name', this.formName);
     formData.append('phone', this.formPhone);
+    formData.append('_method', 'PUT');
+
     if (this.newPhotoDataUrl) {
       const blob = this.dataUrlToBlob(this.newPhotoDataUrl);
       formData.append('avatar', blob, 'avatar.jpg');
     }
-    if (
-      this.showChangePassword &&
-      this.formCurrentPassword &&
-      this.formNewPassword
-    ) {
+
+    if (this.showChangePassword && this.formCurrentPassword) {
       formData.append('current_password', this.formCurrentPassword);
       formData.append('new_password', this.formNewPassword);
-      formData.append(
-        'new_password_confirmation',
-        this.formNewPasswordConfirmation,
-      );
+      formData.append('new_password_confirmation', this.formNewPasswordConfirmation);
     }
 
     this.authService.updateProfile(formData).subscribe({
       next: async (res: any) => {
         this.isSaving = false;
-        this.showSuccess = true;
-        this.showToast('Profil berhasil diperbarui', 'success');
-        await this.refreshUserData();
-        this.newPhotoDataUrl = null;
-        this.showChangePassword = false;
-        this.formCurrentPassword = '';
-        this.formNewPassword = '';
-        this.formNewPasswordConfirmation = '';
-      },
-      error: async (err: any) => {
-        this.isSaving = false;
-        if (err?.status === 422) {
-          const msg =
-            err?.error?.message ||
-            err?.error?.errors?.current_password?.[0] ||
-            'Password saat ini salah atau data tidak valid.';
-          this.showToast(msg, 'danger');
-        } else if (err?.status === 401) {
-          this.showToast('Password saat ini salah.', 'danger');
+        if (res.status === 'success' || res.success || res.message) {
+          this.showSuccess = true;
+          await this.refreshUserData();
         } else {
-          this.showToast('Gagal menyimpan perubahan. Coba lagi.', 'danger');
+          this.showToast(res.message || 'Gagal memperbarui profil', 'danger');
         }
+      },
+      error: (err: any) => {
+        this.isSaving = false;
+        let msg = 'Gagal menyimpan perubahan. Coba lagi.';
+        if (err?.error?.message) {
+          msg = err.error.message;
+        } else if (err?.error?.errors) {
+          const errors = err.error.errors;
+          const firstKey = Object.keys(errors)[0];
+          msg = errors[firstKey][0];
+        } else if (err?.status === 401) {
+          msg = 'Password saat ini salah atau sesi berakhir.';
+        }
+        this.showToast(msg, 'danger');
       },
     });
   }

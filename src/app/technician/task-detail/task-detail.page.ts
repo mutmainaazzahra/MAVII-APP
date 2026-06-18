@@ -342,10 +342,13 @@ export class TaskDetailPage implements OnInit, OnDestroy {
     (mapEl as any)._leaflet_id = null;
     const taskLat = Number(this.task.latitude);
     const taskLng = Number(this.task.longitude);
-    this.mapFullscreen = L.map('task-map-full', { zoomControl: true }).setView(
+    this.mapFullscreen = L.map('task-map-full', { 
+      zoomControl: false 
+    }).setView(
       [taskLat, taskLng],
       14,
     );
+    L.control.zoom({ position: 'topleft' }).addTo(this.mapFullscreen);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',

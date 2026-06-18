@@ -50,7 +50,7 @@
 .location-section {
   background: #ffffff;
   border-radius: 16px;
-  margin: 12px 16px;
+  margin: 12px 16px 30px;
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   .location-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin: 0 0 8px; }
@@ -79,11 +79,16 @@
     cursor: pointer;
     ion-icon { font-size: 24px; color: #1a1a2e; }
   }
+  .leaflet-top.leaflet-left {
+    top: calc(env(safe-area-inset-top) + 120px);
+    left: 10px;
+  }
 }
 
 .map-legend {
   position: absolute;
-  bottom: 32px; left: 16px;
+  bottom: calc(env(safe-area-inset-bottom) + 60px); 
+  left: 16px;
   background: rgba(255,255,255,0.92);
   border-radius: 12px;
   padding: 10px 14px;

@@ -66,6 +66,7 @@
 
 .pp-footer {
   padding: 16px 16px 40px;
+  padding: 16px 16px calc(40px + env(safe-area-inset-bottom));
 
   .pp-agree-row {
     display: flex;

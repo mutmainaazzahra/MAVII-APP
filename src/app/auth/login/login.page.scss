@@ -1,13 +1,14 @@
-.login-content { --background: var(--mavii-blue); }
+.login-content { --background: #ebebeb; }
 
 .login-top {
   background: var(--mavii-blue);
-  height: 50vh;
+  height: 40vh;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   position: relative;
   overflow: visible;
+  transition: all 0.3s ease;
 
   &::before {
     content: '';
@@ -40,10 +41,12 @@
 .login-card {
   background: #ebebeb;
   border-radius: 82px 82px 0 0;
-  padding: 80px 24px 40px;
+  padding: 80px 24px 80px;
+  padding: 80px 24px calc(80px + env(safe-area-inset-bottom));
   position: relative;
   z-index: 2;
-  min-height: 55vh;
+  min-height: 60vh;
+  margin-bottom: -60px;
 }
 
 .login-title {
@@ -135,4 +138,36 @@
 
 @media (min-width: 768px) {
   .login-card { max-width: 480px; margin: 0 auto; border-radius: 32px; }
+}
+
+@media (max-height: 620px) {
+  .login-top {
+    height: 120px;
+    min-height: 120px;
+    .login-illustration {
+      width: auto;
+      height: 90px;
+      margin-bottom: -45px;
+    }
+  }
+  .login-card {
+    padding: 55px 20px calc(24px + env(safe-area-inset-bottom));
+    min-height: auto;
+    border-radius: 40px 40px 0 0;
+  }
+}
+
+@media (max-height: 480px) {
+  .login-top {
+    height: 60px;
+    min-height: 60px;
+    .login-illustration {
+      display: none;
+    }
+  }
+  .login-card {
+    padding: 24px 20px calc(20px + env(safe-area-inset-bottom));
+    min-height: auto;
+    border-radius: 20px 20px 0 0;
+  }
 }

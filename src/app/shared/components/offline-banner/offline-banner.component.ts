@@ -10,7 +10,7 @@ import { NetworkService } from '../../../core/services/network.service';
 })
 export class OfflineBannerComponent implements OnInit, OnDestroy {
   isOnline = true;
-  showOnlineBanner = false; // banner hijau sementara
+  showOnlineBanner = false; 
   private sub!: Subscription;
   private onlineTimer: any;
 
@@ -19,11 +19,11 @@ export class OfflineBannerComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this.networkService.getNetworkStatus().subscribe((online) => {
       if (!this.isOnline && online) {
-        // Baru kembali online → tampil banner hijau sebentar
+        
         this.showOnlineBanner = true;
         this.onlineTimer = setTimeout(() => {
           this.showOnlineBanner = false;
-        }, 3000); // hilang setelah 3 detik
+        }, 3000); 
       }
       this.isOnline = online;
     });

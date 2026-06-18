@@ -137,7 +137,7 @@ export class NotificationService {
         }
       }
     } catch (err) {
-      console.error('Gagal sinkronisasi notifikasi dari server', err);
+      console.warn('Gagal sinkronisasi notifikasi dari server (silently handled)');
     }
   }
 
@@ -219,6 +219,21 @@ export class NotificationService {
               backdropDismiss: false,
             });
             await alert.present();
+          });
+        },
+      );
+
+      await PushNotifications.addListener(
+        'pushNotificationActionPerformed',
+        (notification) => {
+          this.ngZone.run(() => {
+            const data = notification.notification.data;
+            const taskId = data?.task_id;
+            if (taskId) {
+              this.navCtrl.navigateRoot(['/technician/task-detail', taskId]);
+            } else {
+              this.navCtrl.navigateRoot(['/technician/tabs/tasks']);
+            }
           });
         },
       );

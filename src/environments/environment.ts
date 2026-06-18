@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://mavii.my.id',
+  apiUrl: 'https://api.mavii.my.id',
 };
 
 /*

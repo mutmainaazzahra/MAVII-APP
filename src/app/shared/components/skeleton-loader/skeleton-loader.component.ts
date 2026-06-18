@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   standalone: false,
 })
 export class SkeletonLoaderComponent {
-  @Input() count: number = 4; // jumlah skeleton card
+  @Input() count: number = 4; 
 
   getItems(): number[] {
     return Array(this.count).fill(0);

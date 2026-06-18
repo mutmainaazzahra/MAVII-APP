@@ -17,16 +17,16 @@ export class AuthInterceptor implements HttpInterceptor {
     return from(Preferences.get({ key: 'auth_token' })).pipe(
       switchMap(({ value: token }) => {
         if (token) {
-          // Cek apakah request body adalah FormData (upload foto)
+          
           const isFormData = request.body instanceof FormData;
 
-          // Buat headers tanpa Content-Type dulu
+          
           const headers: { [key: string]: string } = {
             Authorization: `Bearer ${token}`,
             Accept: 'application/json',
           };
 
-          // Kalau bukan FormData, tambahkan Content-Type
+          
           if (!isFormData) {
             headers['Content-Type'] = 'application/json';
           }

@@ -27,30 +27,7 @@
 
 <ion-content class="dashboard-content">
 
-  <div class="notif-overlay" *ngIf="showNotifPanel" (click)="toggleNotifPanel()"></div>
-  <div class="notif-modal" *ngIf="showNotifPanel" (click)="$event.stopPropagation()">
-    <div class="notif-header">
-      <span>Notifikasi</span>
-      <div class="notif-actions">
-        <ion-icon name="checkmark-done-outline" class="notif-icon-readall" (click)="markAllAsRead()"></ion-icon>
-        <ion-icon name="trash-outline" class="notif-icon-clear" (click)="clearNotifications()"></ion-icon>
-      </div>
-    </div>
-    <div class="notif-empty" *ngIf="notifications.length === 0">
-      <ion-icon name="notifications-off-outline"></ion-icon>
-      <span>Tidak ada notifikasi</span>
-    </div>
-    <div class="notif-item" [class.notif-unread]="!notif.read" *ngFor="let notif of notifications" (click)="onNotifItemClick(notif)">
-      <div class="notif-icon-wrap"><ion-icon name="clipboard-outline"></ion-icon></div>
-      <div class="notif-content">
-        <p class="notif-title">{{ notif.title }}</p>
-        <p class="notif-desc">{{ notif.message }}</p>
-        <p class="notif-time">{{ notif.time }}</p>
-      </div>
-      <div class="notif-dot" *ngIf="!notif.read"></div>
-    </div>
-    <ion-button expand="block" fill="clear" class="notif-close-btn" (click)="toggleNotifPanel()">Tutup</ion-button>
-  </div>
+
 
   <app-offline-banner></app-offline-banner>
 
@@ -141,3 +118,28 @@
   </div>
 
 </ion-content>
+
+<div class="notif-overlay" *ngIf="showNotifPanel" (click)="toggleNotifPanel()"></div>
+<div class="notif-modal" *ngIf="showNotifPanel" (click)="$event.stopPropagation()">
+  <div class="notif-header">
+    <span>Notifikasi</span>
+    <div class="notif-actions">
+      <ion-icon name="checkmark-done-outline" class="notif-icon-readall" (click)="markAllAsRead()"></ion-icon>
+      <ion-icon name="trash-outline" class="notif-icon-clear" (click)="clearNotifications()"></ion-icon>
+    </div>
+  </div>
+  <div class="notif-empty" *ngIf="notifications.length === 0">
+    <ion-icon name="notifications-off-outline"></ion-icon>
+    <span>Tidak ada notifikasi</span>
+  </div>
+  <div class="notif-item" [class.notif-unread]="!notif.read" *ngFor="let notif of notifications" (click)="onNotifItemClick(notif)">
+    <div class="notif-icon-wrap"><ion-icon name="clipboard-outline"></ion-icon></div>
+    <div class="notif-content">
+      <p class="notif-title">{{ notif.title }}</p>
+      <p class="notif-desc">{{ notif.message }}</p>
+      <p class="notif-time">{{ notif.time }}</p>
+    </div>
+    <div class="notif-dot" *ngIf="!notif.read"></div>
+  </div>
+  <ion-button expand="block" fill="clear" class="notif-close-btn" (click)="toggleNotifPanel()">Tutup</ion-button>
+</div>

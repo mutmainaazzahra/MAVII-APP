@@ -4,13 +4,14 @@ import {
   ToastController,
   ActionSheetController,
   AlertController,
+  NavController,
 } from '@ionic/angular';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { HistoryService } from '../../core/services/history.service';
 import { TaskService } from '../../core/services/task.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Task, TaskProof } from '../../core/models/task.model';
 import { User } from '../../core/models/user.model';
-import { NavController } from '@ionic/angular';
 import { environment } from '../../../environments/environment';
 import { EmailComposer } from 'capacitor-email-composer';
 import { Capacitor } from '@capacitor/core';
@@ -39,6 +40,7 @@ export class HistoryDetailPage implements OnInit {
     private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
+    private socialSharing: SocialSharing,
   ) {}
 
   ngOnInit() {
@@ -136,28 +138,34 @@ export class HistoryDetailPage implements OnInit {
   }
 
   private async loadImageAsBase64(photoPath: string): Promise<string | null> {
-    const proxyUrl = this.getProxyImageUrl(photoPath);
-    const directUrl = this.getPhotoUrl(photoPath);
+    const url = this.getPhotoUrl(photoPath);
+    const token = await this.getAuthToken();
 
-    for (const url of [proxyUrl, directUrl]) {
-      try {
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${await this.getAuthToken()}`,
-          },
-        });
-        if (!response.ok) continue;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
         const blob = await response.blob();
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-        return dataUrl;
-      } catch {}
+        return await this.convertBlobToBase64(blob);
+      }
+    } catch (e) {
+      console.warn(`Gagal mengambil gambar dari ${url}`, e);
     }
     return null;
+  }
+
+  private convertBlobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 
   private async getAuthToken(): Promise<string> {
@@ -171,11 +179,15 @@ export class HistoryDetailPage implements OnInit {
   }
 
   private async compressImage(
-    base64: string,
+    dataUrl: string,
     maxWidth: number = 1200,
     quality: number = 0.75,
   ): Promise<string> {
     return new Promise((resolve, reject) => {
+      if (!dataUrl.startsWith('data:')) {
+        resolve(dataUrl);
+        return;
+      }
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -193,7 +205,7 @@ export class HistoryDetailPage implements OnInit {
         resolve(compressed);
       };
       img.onerror = reject;
-      img.src = base64;
+      img.src = dataUrl;
     });
   }
 
@@ -202,10 +214,14 @@ export class HistoryDetailPage implements OnInit {
     const proofs = this.getAllProofs();
     for (const proof of proofs) {
       if (proof.photo_path) {
-        let img = await this.loadImageAsBase64(proof.photo_path);
-        if (img) {
-          img = await this.compressImage(img, 1200, 0.75);
-          images[proof.id] = img;
+        try {
+          let img = await this.loadImageAsBase64(proof.photo_path);
+          if (img) {
+            img = await this.compressImage(img, 1200, 0.75);
+            images[proof.id] = img;
+          }
+        } catch (e) {
+          console.warn(`Gagal memproses gambar bukti ${proof.id}`, e);
         }
       }
     }
@@ -502,34 +518,58 @@ export class HistoryDetailPage implements OnInit {
       return;
     }
     const filename = this.getTimestampFilename(`laporan-mavii-${this.task?.id || 'laporan'}`, 'pdf');
-    const file = new File([blob], filename, { type: 'application/pdf' });
-    try {
-      if (
-        (navigator as any).share &&
-        (navigator as any).canShare?.({ files: [file] })
-      ) {
-        await (navigator as any).share({
-          files: [file],
-          title: `Laporan - ${this.task?.customer_name || this.task?.title}`,
-        });
-      } else {
-        this.triggerBlobDownload(blob, filename);
-        this.showToast(
-          'PDF didownload. Lampirkan ke WhatsApp secara manual.',
-          'success',
-        );
-        setTimeout(() => {
+    const isNative = Capacitor.isNativePlatform();
+
+    if (isNative) {
+      try {
+        const fileUri = await this.saveTempPdfFile(blob, filename);
+        if (fileUri) {
           const text = `*Laporan Pekerjaan MAVII*\n\n*Pelanggan:* ${this.task?.customer_name || this.task?.title}\n*Lokasi:* ${this.task?.location_name || '-'}\n*Gangguan:* ${this.task?.description || this.task?.title}\n*Status:* ${this.getStatusLabel(this.task?.status || '')}\n*Teknisi:* ${this.user?.name}\n*Tanggal:* ${this.formatDate(this.task?.completed_at || this.task?.updated_at)}`;
-          window.open(
-            `https://wa.me/?text=${encodeURIComponent(text)}`,
-            '_blank',
-          );
-        }, 800);
+          await this.socialSharing.share(text, 'Laporan Pekerjaan MAVII', fileUri, undefined);
+        } else {
+          this.showToast('Gagal membagikan PDF', 'danger');
+        }
+      } catch (err) {
+        this.showToast('Gagal berbagi laporan', 'danger');
       }
-    } catch (err: any) {
-      if (err?.message && !err.message.toLowerCase().includes('cancel')) {
-        this.showToast('Gagal berbagi', 'danger');
+    } else {
+      const file = new File([blob], filename, { type: 'application/pdf' });
+      try {
+        if ((navigator as any).share && (navigator as any).canShare?.({ files: [file] })) {
+          await (navigator as any).share({
+            files: [file],
+            title: `Laporan - ${this.task?.customer_name || this.task?.title}`,
+          });
+        } else {
+          this.triggerBlobDownload(blob, filename);
+          this.showToast('PDF didownload. Lampirkan ke WhatsApp secara manual.', 'success');
+          setTimeout(() => {
+            const text = `*Laporan Pekerjaan MAVII*\n\n*Pelanggan:* ${this.task?.customer_name || this.task?.title}\n*Lokasi:* ${this.task?.location_name || '-'}\n*Gangguan:* ${this.task?.description || this.task?.title}\n*Status:* ${this.getStatusLabel(this.task?.status || '')}\n*Teknisi:* ${this.user?.name}\n*Tanggal:* ${this.formatDate(this.task?.completed_at || this.task?.updated_at)}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+          }, 800);
+        }
+      } catch (err: any) {
+        if (err?.message && !err.message.toLowerCase().includes('cancel')) {
+          this.showToast('Gagal berbagi', 'danger');
+        }
       }
+    }
+  }
+
+  private async saveTempPdfFile(blob: Blob, filename: string): Promise<string | null> {
+    try {
+      const base64 = await this.blobToBase64(blob);
+      const directory = Directory.Cache;
+      await Filesystem.writeFile({
+        path: filename,
+        data: base64,
+        directory: directory,
+      });
+      const { uri } = await Filesystem.getUri({ path: filename, directory });
+      return uri;
+    } catch (err) {
+      console.error('Failed to save temp PDF file', err);
+      return null;
     }
   }
 
