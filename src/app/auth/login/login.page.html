@@ -1,44 +1,44 @@
 <ion-content [fullscreen]="true" class="login-content">
+  <div class="main-container">
+    <div class="login-top">
+      <img src="assets/login.png" alt="login" class="login-illustration"/>
+    </div>
 
-  <div class="login-top">
-    <img src="assets/login.png" alt="login" class="login-illustration"/>
-  </div>
+    <div class="login-card">
+      <h2 class="login-title">Login</h2>
 
-  <div class="login-card">
-    <h2 class="login-title">Login</h2>
-
-    <div class="input-group">
-      <label class="input-label">Email</label>
-      <div class="input-box">
-        <ion-icon name="mail-outline" class="input-icon"></ion-icon>
-        <input type="email" placeholder="Masukkan email" [(ngModel)]="email" [disabled]="isLoading" class="native-input"/>
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <div class="input-box">
+          <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+          <input type="email" placeholder="Masukkan email" [(ngModel)]="email" [disabled]="isLoading" class="native-input"/>
+        </div>
+        <p class="error-text" *ngIf="emailError">{{ emailError }}</p>
       </div>
-      <p class="error-text" *ngIf="emailError">{{ emailError }}</p>
-    </div>
 
-    <div class="input-group">
-      <label class="input-label">Password</label>
-      <div class="input-box">
-        <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
-        <input [type]="showPassword ? 'text' : 'password'" placeholder="Masukkan password" [(ngModel)]="password" [disabled]="isLoading" class="native-input"/>
-        <ion-icon [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" class="input-icon-right" (click)="showPassword = !showPassword"></ion-icon>
+      <div class="input-group">
+        <label class="input-label">Password</label>
+        <div class="input-box">
+          <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+          <input [type]="showPassword ? 'text' : 'password'" placeholder="Masukkan password" [(ngModel)]="password" [disabled]="isLoading" class="native-input"/>
+          <ion-icon [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" class="input-icon-right" (click)="showPassword = !showPassword"></ion-icon>
+        </div>
+        <p class="error-text" *ngIf="passwordError">{{ passwordError }}</p>
       </div>
-      <p class="error-text" *ngIf="passwordError">{{ passwordError }}</p>
-    </div>
 
-    <div class="error-banner" *ngIf="errorMessage">
-      <ion-icon name="alert-circle-outline"></ion-icon>
-      <span>{{ errorMessage }}</span>
-    </div>
+      <div class="error-banner" *ngIf="errorMessage">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
 
-    <div class="forgot-password-link" (click)="goToForgotPassword()">
-      Forgot Password?
-    </div>
+      <div class="forgot-password-link" (click)="goToForgotPassword()">
+        Forgot Password?
+      </div>
 
-    <ion-button expand="block" class="btn-login" [disabled]="isLoading" (click)="onLogin()">
-      <ion-spinner name="crescent" *ngIf="isLoading" slot="start"></ion-spinner>
-      {{ isLoading ? 'Memproses...' : 'LOGIN' }}
-    </ion-button>
+      <ion-button expand="block" class="btn-login" [disabled]="isLoading" (click)="onLogin()">
+        <ion-spinner name="crescent" *ngIf="isLoading" slot="start"></ion-spinner>
+        {{ isLoading ? 'Memproses...' : 'LOGIN' }}
+      </ion-button>
+    </div>
   </div>
-
 </ion-content>
